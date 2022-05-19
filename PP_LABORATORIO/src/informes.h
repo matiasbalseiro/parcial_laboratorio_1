@@ -11,10 +11,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "informes.h"
-#include "utn.h"
 #include "zona.h"
 #include "censista.h"
+#include "informes.h"
+#include "utn.h"
+
 
 
 #endif /* INFORMES_H_ */
+
+int censistasActivosYZonaPendiente(Zona *zonas, Censista *censistas, int len);
+int censistasOrdenados(Censista *censistas, int len);

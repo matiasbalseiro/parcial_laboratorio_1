@@ -61,6 +61,8 @@ int censistaLiberado(Censista *list, int len);
 
 int mostrarCensistas(Censista *list, int len);
 
+int mostrarCensistasActivos(Censista *list, int len);
+
 void mostrarCensista(Censista list);
 
 int cargaForzadaCensista(Censista *list);

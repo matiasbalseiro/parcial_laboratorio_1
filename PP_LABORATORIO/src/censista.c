@@ -382,6 +382,27 @@ int mostrarCensistas(Censista *list, int len) {
 return retorno;
 }
 
+/// @brief Muestra la lista de censistas activos
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (0) si hay error - (1) si no
+int mostrarCensistasActivos(Censista *list, int len) {
+	int retorno;
+	retorno = -1;
+
+	if(list != NULL && len > 0){
+		for(int i = 0; i < len; i++){
+			if(list[i].estado == ACTIVO){
+				mostrarCensista(list[i]);
+			}
+		}
+		retorno = 0;
+	}
+
+return retorno;
+}
+
 /// @brief Muestra un censista
 ///
 /// @param list Puntero al array

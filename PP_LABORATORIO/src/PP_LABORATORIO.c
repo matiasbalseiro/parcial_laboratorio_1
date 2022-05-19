@@ -14,6 +14,7 @@
 #include "utn.h"
 #include "censista.h"
 #include "zona.h"
+#include "informes.h"
 
 #define CANT_CENSISTAS_ZONAS 10
 #define LEN_NOMBRE 51
@@ -59,10 +60,11 @@ int main(void) {
 						"8. Mostrar zonas: \n"
 						"9. Carga forzada Censistas: \n"
 						"10. Carga Forzada Zonas: \n"
-						"11. SALIR\n"
+						"11. INFORMES\n"
+						"12. SALIR/n"
 						"\nElija una opcion: ",
 
-				"\nError opcion invalida", 1, 13, 2) == 0) {
+				"\nError opcion invalida", 1, 12, 2) == 0) {
 		}
 		switch (opcionMenu) {
 		case 1:
@@ -140,18 +142,23 @@ int main(void) {
 			cargaForzadaZona(zonas);
 			break;
 		case 11:
-			printf("Adios.");
+			if((hayCensistaCargado(censistas, CANT_CENSISTAS_ZONAS) && hayZonaCargada(zonas, CANT_CENSISTAS_ZONAS))== 1){
+				censistasActivosYZonaPendiente(zonas, censistas, CANT_CENSISTAS_ZONAS);
+				censistasOrdenados(censistas, CANT_CENSISTAS_ZONAS);
+
+			}
 			//modificarZona(zonas, CANT_CENSISTAS_ZONAS, bufferId);
 			//removerZona(zonas, censistas, CANT_CENSISTAS);
 			break;
-		/*case 12:
+		case 12:
+			printf("Adios.");
 
 			break;
-		case 13:
+		/*case 13:
 			printf("Adios.");
 			break;*/
 		}
-	} while (opcionMenu != 11);
+	} while (opcionMenu != 12);
 
 	return 0;
 }
