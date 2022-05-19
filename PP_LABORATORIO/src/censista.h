@@ -8,8 +8,8 @@
 #ifndef CENSISTA_H_
 #define CENSISTA_H_
 
-#include "fechasDeNacimiento.h"
-#include "direcciones.h"
+//#include "fechasDeNacimiento.h"
+//#include "direcciones.h"
 
 #define LEN_NOMBRE 51
 #define LEN_CARGA_CENSISTA 5
@@ -17,17 +17,28 @@
 #define INACTIVO 2
 #define LIBERADO 3
 
-struct {
+typedef struct {
+	int dia;
+	int mes;
+	int anio;
+} Fechadenacimiento;
+
+typedef struct {
+	char calle[51];
+	int altura;
+} Direccion;
+
+typedef struct {
 	int idCensista;
 	char nombre[51];
 	char apellido[51];
-	Fechasdenacimiento fechadenacimiento;
+	Fechadenacimiento fechadenacimiento;
 	int edad;
-	Direcciones direccion;
+	Direccion direccion;
 	int estado; //activo inactivo liberado
 	int idZona;
 	int isEmpty;
-}typedef Censista;
+} Censista;
 
 int initCensistas(Censista *list, int len);
 

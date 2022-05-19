@@ -2,7 +2,7 @@
  * censista.c
  *
  *  Created on: 15 may. 2022
- *      Author: matia
+ *      Author: matias
  */
 #include <stdio.h>
 #include <stdlib.h>

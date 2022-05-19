@@ -322,9 +322,9 @@ int asignarZona(Zona *zonas, int len, Censista *censistas){
 					break;
 				}
 			}
-				if(flag == 0){
-					printf("ERROR, ese ID de censista no existe.\n");
-				}
+			if(flag == 0){
+				printf("ERROR, ID invalido.\n");
+			}
 		}
 		return retorno;
 	}
