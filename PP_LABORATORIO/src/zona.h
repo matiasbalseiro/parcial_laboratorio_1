@@ -11,15 +11,18 @@
 
 #define CANT_CALLES 4
 #define LEN_CALLES 51
-#define CANT_CALLES 4
 #define LEN_CARGA_ZONA 5
+#define PENDIENTE 1
+#define FINALIZADO 2
 
 struct {
 	int idZona;
 	char calles[CANT_CALLES][LEN_CALLES];
 	int localidadZona;
 	int estado; //pendiente2/finalizado1
-	//int idCensista;
+	int inSitu;
+	int virtual;
+	int ausentes;
 	int isEmpty;
 }typedef Zona;
 
@@ -27,7 +30,9 @@ int initZonas(Zona *list, int len);
 
 int cargarZona(Zona *list, int len, int id, char calle[][51], int localidad);
 
-int mostrarZonas(Zona *list, int len);
+int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Censista *censistas);
+
+int mostrarZonas(Zona *zonas, Censista *censistas, int len);
 
 void mostrarZona(Zona list);
 
@@ -39,8 +44,12 @@ int asignarZona(Zona *zonas, int len, Censista *censistas);
 
 int cargaForzadaZona(Zona *list);
 
+void mostrarZonaPendiente(Zona list);
+
+int mostrarZonasPendientes(Zona *list, int len);
 
 
 
 
 #endif /* ZONA_H_ */
+

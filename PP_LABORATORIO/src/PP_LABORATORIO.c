@@ -1,7 +1,7 @@
 /*
  ============================================================================
- Name        : parcialJueves.c
- Author      : franco
+ Name        : PP_LABORATORIO.c
+ Author      : matias
  Version     :
  Copyright   : Your copyright notice
  Description : Hello World in C, Ansi-style
@@ -43,6 +43,9 @@ int main(void) {
 	int idZona = 0;
 	char calleZona[CANT_CALLES][LEN_CALLES];
 	int localidad = 0;
+	int bufferInSitu = 0;
+	int bufferVirtual = 0;
+	int bufferAusentes = 0;
 
 	initCensistas(censistas, CANT_CENSISTAS);
 	initZonas(zonas, CANT_ZONAS);
@@ -110,7 +113,8 @@ int main(void) {
 				if (utn_getNombre(calleZona[1], LEN_CALLES, "\nIndique la segunda calle: ", "\nERROR\n", 2) == 0) {
 					if (utn_getNombre(calleZona[2], LEN_CALLES, "\nIndique la tercer calle: ", "\nERROR\n", 2) == 0) {
 						if (utn_getNombre(calleZona[3], LEN_CALLES, "\nIndique la cuarta calle: ", "\nERROR\n", 2) == 0) {
-							if (utn_getNumero(&localidad, "\nIndique localidad. (1 - 10): ", "ERROR\n", 1, 10, 2) == 0) {
+							if (utn_getNumero(&localidad, "\n1)V.DOMINICO\n2)V.CORINA\n3)GERLI\n4)CHINGOLO\n5)V.OBRERA"
+									"\n6)SOLANO\n7)BERNAL\n8)AVELLANEDA\n9)LANUS\n10)QUILMES\n\nIndique localidad.", "ERROR\n", 1, 10, 2) == 0) {
 								cargarZona(zonas, CANT_ZONAS, idZona, calleZona, localidad);
 							}
 						}
@@ -129,12 +133,19 @@ int main(void) {
 			break;
 		case 6:
 
+			if((hayCensistaCargado(censistas, CANT_CENSISTAS) && hayZonaCargada(zonas, CANT_ZONAS))== 1){
+				cargarDatos(zonas, bufferInSitu, bufferVirtual, bufferAusentes, CANT_ZONAS, censistas);
+			} else {
+				printf("\nERROR, Debes cargar al menos un censista y una zona.\n");
+			}
+
 			break;
 		case 7:
 			mostrarCensistas(censistas, CANT_CENSISTAS);
 			break;
 		case 8:
-			mostrarZonas(zonas, CANT_ZONAS);
+			mostrarZonas(zonas, censistas, CANT_CENSISTAS);
+
 			break;
 		case 9:
 			cargaForzadaCensista(censistas);
@@ -150,5 +161,6 @@ int main(void) {
 
 	return 0;
 }
+
 
 

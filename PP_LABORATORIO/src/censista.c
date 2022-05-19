@@ -13,16 +13,23 @@
 #include "direcciones.h"
 #include "zona.h"
 
+static char estado[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
+
 static int incrementarId();
 
 /// @brief Incrementa el id
-/// @return retorna el id del pasajero
+/// @return retorna el id
 static int incrementarId(){
     static int id = 1000;
     id++;
     return id;
 }
 
+/// @brief Indica que todas las posiciones del array estan vacias
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (-1) si hay error - (0) si no
 int initCensistas(Censista *list, int len) {
 
 	int retorno = -1;
@@ -37,6 +44,20 @@ int initCensistas(Censista *list, int len) {
 	return retorno;
 }
 
+/// @brief Agrega en un array de censistas existentes los valores recibidos
+/// 	   como parametro en la primera posicion libre
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @param id Id del censista
+/// @param nombre Nombre del censista
+/// @param apellido Apellido del censista
+/// @param dia Dia de nacimiento del censista
+/// @param mes Mes de nacimiento del censista
+/// @param anio Anio de nacimiento del censista
+/// @param edad Edad del censista
+/// @param calle Calle domicilio del censista
+/// @param altura Altura domicilio del censista
+/// @return Retorna (-1) si hay error - (0) si no
 int cargarCensista(Censista *list, int len, int id, char nombre[], char apellido[], int dia, int mes, int anio, int edad, char calle[], int altura){
 	int retorno;
 	int indexLibre;
@@ -59,11 +80,17 @@ int cargarCensista(Censista *list, int len, int id, char nombre[], char apellido
 					retorno = 0;
 					mostrarCensista(list[indexLibre]);
 
-					printf("\nCARGA EXITOSA. SE DIO DE ALTA AL PASAJERO\n");
+					printf("\nCARGA EXITOSA. SE DIO DE ALTA AL CENSISTA\n");
 		}
 	}
 	return retorno;
 }
+
+/// @brief Busca si hay un espacio libre para cargar un censista
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna si hay un espacio vacio o (-1) si no
 int buscarIndexPorIsEmpty(Censista *list, int len){
 
 	int retorno = -1;
@@ -79,6 +106,12 @@ int buscarIndexPorIsEmpty(Censista *list, int len){
 	return retorno;
 }
 
+/// @brief Si el censista esta "activo" lo pone "inactivo", si esta
+/// 	   "inactivo" o "liberado" lo borra de manera logica
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @param id Id del censista
+/// @return Retorna (0) si hay error - (1) si no
 int removerCensista(Censista *list, int len, int id) {
 
 	int retorno;
@@ -112,6 +145,12 @@ int removerCensista(Censista *list, int len, int id) {
 	return retorno;
 }
 
+/// @brief
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @param id Id del censista
+/// @return Retorna (0) si hay error - (1) si no
 int modificarCensista(Censista *list, int len, int id){
 
 	int retorno = -1;
@@ -254,6 +293,12 @@ int modificarCensista(Censista *list, int len, int id){
 	return retorno;
 }
 
+/// @brief Busca censista por mediante su id
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @param id Id del censista
+/// @return Retorna si encuentra el id buscado o (-1) si no
 int buscarCensistaPorId(Censista *list, int len, int id) {
 	int retorno;
 		retorno = -1;
@@ -269,6 +314,11 @@ int buscarCensistaPorId(Censista *list, int len, int id) {
 	return retorno;
 }
 
+/// @brief Verifica si hay al menos un censista cargada
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (0) si hay error - (1) si no
 int hayCensistaCargado(Censista *list, int len) {
 	int retorno = 0;
 	if (list != NULL && len > 0) {
@@ -282,34 +332,44 @@ int hayCensistaCargado(Censista *list, int len) {
 	return retorno;
 }
 
-int existeCensistaPorId(Censista *list, int len, int id)
-{
-	int retorno = -1;
+/// @brief
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @param id Id del censista
+/// @return Retorna (-1) si hay error - (0) si no
+//int existeCensistaPorId(Censista *list, int len, int id){
+//	int retorno = -1;
+//
+//		if(list != NULL && len > 0){
+//			for(int i = 0; i < len; i++){
+//				if(list[i].isEmpty == 0 && list[i].idCensista == id){
+//					retorno = 0;
+//					break;
+//				}
+//			}
+//		}
+//	return retorno;
+//}
 
-		if(list != NULL && len > 0){
-			for(int i = 0; i < len; i++){
-				if(list[i].isEmpty == 0 && list[i].idCensista == id){
-					retorno = 0;
-					break;
-				}
-			}
-		}
-	return retorno;
-}
+//int censistaLiberado(Censista *list, int len){
+//	int retorno = -1;
+//
+//	if(list != NULL && len > 0) {
+//		for(int i = 0; i < len; i++) {
+//			if(list[i].isEmpty == 0 && list[i].estado == 3) {
+//				retorno = i;
+//			}
+//		}
+//	}
+//	return retorno;
+//}
 
-int censistaLiberado(Censista *list, int len){
-	int retorno = -1;
-
-	if(list != NULL && len > 0) {
-		for(int i = 0; i < len; i++) {
-			if(list[i].isEmpty == 0 && list[i].estado == 3) {
-				retorno = i;
-			}
-		}
-	}
-	return retorno;
-}
-
+/// @brief Muestra la lista de censistas
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (0) si hay error - (1) si no
 int mostrarCensistas(Censista *list, int len) {
 	int retorno;
 	retorno = -1;
@@ -324,30 +384,34 @@ int mostrarCensistas(Censista *list, int len) {
 return retorno;
 }
 
+/// @brief Muestra un censista
+///
+/// @param list Puntero al array
 void mostrarCensista(Censista list){
-
-	char ESTADO[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
-
 
 	if(list.isEmpty == 0) {
 		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
 				list.idCensista, list.nombre, list.apellido,
 				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
 				list.fechadenacimiento.anio, list.edad,
-				list.direccion.calle, list.direccion.altura, ESTADO[list.estado]);
+				list.direccion.calle, list.direccion.altura, estado[list.estado]);
 	}
 }
 
+/// @brief Carga forzada de censistas
+///
+/// @param list Puntero al array
+/// @return Retorna (-1) si hay error - (0) si no
 int cargaForzadaCensista(Censista *list){
 	int retorno = -1;
 	int i;
 	printf("\nINFORMAR CENSISTA/S\n\n");
 
-	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, 1,0},
-											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, 1, 0},
-											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, 1, 0},
-											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, 1, 0},
-											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, 1, 0}};
+	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, LIBERADO,0, 0},
+											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, LIBERADO, 0, 0},
+											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, LIBERADO, 0, 0},
+											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, LIBERADO, 0, 0},
+											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, LIBERADO, 0, 0}};
 
 	if(list != NULL){
 		for(i = 0; i < LEN_CARGA_CENSISTA; i++){
@@ -358,5 +422,36 @@ int cargaForzadaCensista(Censista *list){
 		}
 	}
 	return retorno;
+}
+
+void mostrarCensistaPendiente(Censista list){
+
+	if(list.isEmpty == 0 && list.estado == LIBERADO) {
+		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
+				list.idCensista, list.nombre, list.apellido,
+				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
+				list.fechadenacimiento.anio, list.edad,
+				list.direccion.calle, list.direccion.altura, estado[list.estado]);
+	}
+
+}
+
+/// @brief Muestra la lista de zonas con sus datos y estado "pendiente"
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (0) si hay error - (1) si no
+int mostrarCensistasPendientes(Censista *list, int len) {
+	int retorno;
+	retorno = -1;
+
+	if(list != NULL && len > 0){
+		for(int i = 0; i < len; i++){
+			mostrarCensistaPendiente(list[i]);
+		}
+		retorno = 0;
+	}
+
+return retorno;
 }
 
