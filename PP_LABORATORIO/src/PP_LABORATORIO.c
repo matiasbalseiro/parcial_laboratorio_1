@@ -17,19 +17,15 @@
 #include "direcciones.h"
 #include "fechasDeNacimiento.h"
 
-#define CANT_CENSISTAS 10
-#define CANT_ZONAS 10
+#define CANT_CENSISTAS_ZONAS 10
 #define LEN_NOMBRE 51
 #define CANT_CALLES 4
 #define LEN_CALLES 51
 
 int main(void) {
 	setbuf(stdout, NULL);
-	Censista censistas[CANT_CENSISTAS];
-//	Fechasdenacimiento fechas[CANT_CENSISTAS];
-//	Direcciones direcciones[CANT_CENSISTAS];
-	Zona zonas[CANT_ZONAS];
-//	int respuesta;
+	Censista censistas[CANT_CENSISTAS_ZONAS];
+	Zona zonas[CANT_CENSISTAS_ZONAS];
 	int opcionMenu;
 	int idCensista = 0;
 	char nombre[LEN_NOMBRE];
@@ -46,9 +42,10 @@ int main(void) {
 	int bufferInSitu = 0;
 	int bufferVirtual = 0;
 	int bufferAusentes = 0;
+	//int bufferId = 0;
 
-	initCensistas(censistas, CANT_CENSISTAS);
-	initZonas(zonas, CANT_ZONAS);
+	initCensistas(censistas, CANT_CENSISTAS_ZONAS);
+	initZonas(zonas, CANT_CENSISTAS_ZONAS);
 
 	do {
 		if (utn_getNumero(&opcionMenu,
@@ -67,8 +64,7 @@ int main(void) {
 						"11. SALIR\n"
 						"\nElija una opcion: ",
 
-				"\nError opcion invalida", 1, 11, 2) == 0) {
-
+				"\nError opcion invalida", 1, 13, 2) == 0) {
 		}
 		switch (opcionMenu) {
 		case 1:
@@ -80,7 +76,7 @@ int main(void) {
 							if (utn_getNumero(&edad, "\nIndique edad. (18 - 52): ", "ERROR\n", 18, 52, 2) == 0) {
 								if (utn_getNombre(calleCensista, LEN_NOMBRE, "\nIndique calle: ", "\nERROR, ingrese una calle valida.\n", 2) == 0) {
 									if (utn_getNumero(&altura, "\nIndique altura del domicilio. (1 - 10000): ", "ERROR\n", 1, 10000, 2) == 0) {
-										cargarCensista(censistas, CANT_CENSISTAS, idCensista, nombre, apellido, dia, mes, anio, edad, calleCensista, altura);
+										cargarCensista(censistas, CANT_CENSISTAS_ZONAS, idCensista, nombre, apellido, dia, mes, anio, edad, calleCensista, altura);
 									}
 								}
 							}
@@ -89,63 +85,55 @@ int main(void) {
 				}
 			}
 		}
-
 			break;
 		case 2:
-			if(hayCensistaCargado(censistas, CANT_CENSISTAS) == 1){
-				modificarCensista(censistas, CANT_CENSISTAS, idCensista);
+			if(hayCensistaCargado(censistas, CANT_CENSISTAS_ZONAS) == 1){
+				modificarCensista(censistas, CANT_CENSISTAS_ZONAS, idCensista);
 			} else {
 				printf("\nERROR, primero debes cargar al menos un censista.\n");
 			}
 			break;
 		case 3:
-
-			if(hayCensistaCargado(censistas, CANT_CENSISTAS) == 1){
-				removerCensista(censistas, CANT_CENSISTAS, idCensista);
+			if(hayCensistaCargado(censistas, CANT_CENSISTAS_ZONAS) == 1){
+				removerCensista(censistas, CANT_CENSISTAS_ZONAS, idCensista);
 			} else {
 				printf("\nERROR, primero debes cargar al menos un censista.\n");
 			}
-
 			break;
 		case 4:
-
 			if (utn_getNombre(calleZona[0], LEN_CALLES, "\nIndique la primer calle: ", "\nERROR\n", 2) == 0) {
 				if (utn_getNombre(calleZona[1], LEN_CALLES, "\nIndique la segunda calle: ", "\nERROR\n", 2) == 0) {
 					if (utn_getNombre(calleZona[2], LEN_CALLES, "\nIndique la tercer calle: ", "\nERROR\n", 2) == 0) {
 						if (utn_getNombre(calleZona[3], LEN_CALLES, "\nIndique la cuarta calle: ", "\nERROR\n", 2) == 0) {
 							if (utn_getNumero(&localidad, "\n1)V.DOMINICO\n2)V.CORINA\n3)GERLI\n4)CHINGOLO\n5)V.OBRERA"
 									"\n6)SOLANO\n7)BERNAL\n8)AVELLANEDA\n9)LANUS\n10)QUILMES\n\nIndique localidad.", "ERROR\n", 1, 10, 2) == 0) {
-								cargarZona(zonas, CANT_ZONAS, idZona, calleZona, localidad);
+								cargarZona(zonas, CANT_CENSISTAS_ZONAS, idZona, calleZona, localidad);
 							}
 						}
 					}
 				}
 			}
-
 			break;
 		case 5:
-			if((hayCensistaCargado(censistas, CANT_CENSISTAS) && hayZonaCargada(zonas, CANT_ZONAS))== 1){
-				asignarZona(zonas, CANT_ZONAS, censistas);
+			if((hayCensistaCargado(censistas, CANT_CENSISTAS_ZONAS) && hayZonaCargada(zonas, CANT_CENSISTAS_ZONAS))== 1){
+				asignarZona(zonas, CANT_CENSISTAS_ZONAS, censistas);
 			} else {
 				printf("\nERROR, Debes cargar al menos un censista y una zona.\n");
 			}
-
 			break;
 		case 6:
+			if((hayCensistaCargado(censistas, CANT_CENSISTAS_ZONAS) && hayZonaCargada(zonas, CANT_CENSISTAS_ZONAS))== 1){
+					cargarDatos(zonas, bufferInSitu, bufferVirtual, bufferAusentes, CANT_CENSISTAS_ZONAS, censistas);
 
-			if((hayCensistaCargado(censistas, CANT_CENSISTAS) && hayZonaCargada(zonas, CANT_ZONAS))== 1){
-				cargarDatos(zonas, bufferInSitu, bufferVirtual, bufferAusentes, CANT_ZONAS, censistas);
 			} else {
 				printf("\nERROR, Debes cargar al menos un censista y una zona.\n");
 			}
-
 			break;
 		case 7:
-			mostrarCensistas(censistas, CANT_CENSISTAS);
+			mostrarCensistas(censistas, CANT_CENSISTAS_ZONAS);
 			break;
 		case 8:
-			mostrarZonas(zonas, censistas, CANT_CENSISTAS);
-
+			mostrarZonasDatos(zonas, censistas, CANT_CENSISTAS_ZONAS);
 			break;
 		case 9:
 			cargaForzadaCensista(censistas);
@@ -155,12 +143,21 @@ int main(void) {
 			break;
 		case 11:
 			printf("Adios.");
+			//modificarZona(zonas, CANT_CENSISTAS_ZONAS, bufferId);
+			//removerZona(zonas, censistas, CANT_CENSISTAS);
 			break;
+		/*case 12:
+
+			break;
+		case 13:
+			printf("Adios.");
+			break;*/
 		}
 	} while (opcionMenu != 11);
 
 	return 0;
 }
+
 
 
 

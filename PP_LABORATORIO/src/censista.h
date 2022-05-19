@@ -59,3 +59,4 @@ void mostrarCensistaPendiente(Censista list);
 int mostrarCensistasPendientes(Censista *list, int len);
 
 #endif /* CENSISTA_H_ */
+

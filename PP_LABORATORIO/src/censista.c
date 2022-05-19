@@ -122,8 +122,8 @@ int removerCensista(Censista *list, int len, int id) {
 
 	if (list != NULL && len > 0) {
 		mostrarCensistas(list, len);
-			if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 1000, 2000, 2) == 0){
-				id = bufferId;
+		if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 1000, 2000, 2) == 0){
+			id = bufferId;
 		}
 		index = buscarCensistaPorId(list, len, id);
 		if (index != -1){
@@ -145,7 +145,7 @@ int removerCensista(Censista *list, int len, int id) {
 	return retorno;
 }
 
-/// @brief
+/// @brief Modifica datos del censista
 ///
 /// @param list Puntero al array
 /// @param len Largo del array
@@ -287,7 +287,7 @@ int modificarCensista(Censista *list, int len, int id){
 					}
 				}while(opcionMenu != 6);
 		} else {
-			printf("ERROR, no se ha encontrado pasajero asociado a ese ID.");
+			printf("ERROR, no se ha encontrado censista asociado a ese ID.");
 		}
 	}
 	return retorno;
@@ -436,7 +436,7 @@ void mostrarCensistaPendiente(Censista list){
 
 }
 
-/// @brief Muestra la lista de zonas con sus datos y estado "pendiente"
+/// @brief Muestra la lista de censistas con sus datos y estado "liberado"
 ///
 /// @param list Puntero al array
 /// @param len Largo del array
@@ -454,4 +454,5 @@ int mostrarCensistasPendientes(Censista *list, int len) {
 
 return retorno;
 }
+
 

@@ -97,6 +97,168 @@ int buscarIndexPorIsEmptyZona(Zona *list, int len){
 	return retorno;
 }
 
+int buscarZonaPorId(Zona *list, int len, int id) {
+	int retorno;
+		retorno = -1;
+
+		if(list != NULL && len > 0 && id > 0 ){
+			for(int i = 0; i < len; i++){
+				if(list[i].idZona == id && list[i].isEmpty == 0){
+					retorno = i;
+					break;
+				}
+			}
+		}
+	return retorno;
+}
+/// @brief Busca una zona y la borra de manera logica
+///
+/// @param zonas Puntero al array
+/// @param censistas Puntero al array
+/// @param len Largo del array
+/// @return Retorna -1 si hay error y 0 si no
+int removerZona(Zona *zonas, Censista *censistas, int len){
+	int retorno = -1;
+	int bufferId;
+	int flag = 0;
+
+	if(zonas != NULL && len > 0){
+		mostrarZonasPendientesYFinalizadas(zonas, len);
+		if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 400, 2000, 2) == 0){
+
+		for(int i = 0; i < len; i++){
+			if(zonas[i].isEmpty == 0 && bufferId == zonas[i].idZona && zonas[i].estado == FINALIZADO){
+				for(int j = 0; j < len; j++){
+					if(censistas[j].idZona != zonas[i].idZona){
+						zonas[i].isEmpty = 1;
+						flag = 1;
+						retorno = 0;
+					}
+				}
+			}
+		}
+		if(flag == 0){
+			for(int i = 0; i < len; i++){
+				if(zonas[i].isEmpty == 0 && bufferId == zonas[i].idZona && zonas[i].estado == PENDIENTE){
+					for(int j = 0; j < len; j++){
+						if(censistas[j].idZona == zonas[i].idZona){
+							censistas[j].estado = LIBERADO;
+							zonas[i].isEmpty = 1;
+							retorno = 0;
+						}
+				}
+			}
+		}
+
+	}
+}
+	}
+	return retorno;
+
+}
+/// @brief Pide el id de zona y modifica sus datos
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @param id Id de la zona
+/// @return Retorna -1 si hay error y 0 si no
+int modificarZona(Zona *list, int len, int id){
+
+	int retorno = -1;
+	int index;
+	int opcionMenu;
+	int opcionMenuCalles;
+	int bufferId;
+	int bufferLocalidad;
+	char bufferCalleUno[51];
+	char bufferCalleDos[51];
+	char bufferCalleTres[51];
+	char bufferCalleCuatro[51];
+
+	if (list != NULL && len > 0) {
+		mostrarZonasPendientes(list, len);
+		if (utn_getNumero(&bufferId, "\nIndique ID a modificar. \n", "ERROR\n", 400, 500, 2) == 0) {
+			id = bufferId;
+		}
+		index = buscarZonaPorId(list, len, id);
+		if (index != -1){
+			mostrarZona(list[index]);
+				do{
+					if (utn_getNumero(&opcionMenu,
+
+							"\n*****************************MENU MODIFICAR*****************************\n\n"
+									"1. CALLES \n"
+									"2. LOCALIDAD \n"
+									"3. REGRESAR AL MENU PRINCIPAL\n"
+									"\nElija una opcion: ",
+
+							"\nError opcion invalida", 1, 63, 2) == 0) {
+							switch(opcionMenu){
+							case 1:
+								do{
+									if (utn_getNumero(&opcionMenuCalles,
+
+													"\n*****************************MODIFICAR FECHA DE NACIMIENTO*****************************\n\n"
+															"1. CALLE 1: \n"
+															"2. CALLE 2: \n"
+															"3. CALLE 3: \n"
+															"4. CALLE 4: \n"
+															"5. VOLVER ATRAS \n"
+															"\nElija una opcion: ",
+
+															"\nError opcion invalida", 1, 5, 2) == 0) {
+											}
+									switch(opcionMenuCalles){
+									case 1:
+										if(utn_getNombre(bufferCalleUno, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+											strncpy(list[index].calles[0], bufferCalleUno, sizeof(list[index].calles[0]));
+											printf("Modificacion realizada.");
+										}
+										break;
+									case 2:
+										if(utn_getNombre(bufferCalleDos, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+											strncpy(list[index].calles[1], bufferCalleDos, sizeof(list[index].calles[1]));
+											printf("Modificacion realizada.");
+										}
+										break;
+									case 3:
+										if(utn_getNombre(bufferCalleTres, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+											strncpy(list[index].calles[2], bufferCalleTres, sizeof(list[index].calles[2]));
+											printf("Modificacion realizada.");
+										}
+										break;
+									case 4:
+										if(utn_getNombre(bufferCalleCuatro, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+											strncpy(list[index].calles[3], bufferCalleCuatro, sizeof(list[index].calles[3]));
+											printf("Modificacion realizada.");
+										}
+										break;
+									case 5:
+										printf("Volver atras");
+										break;
+									}
+								}while(opcionMenuCalles != 5);
+
+								break;
+							case 2:
+								if(utn_getNumero(&bufferLocalidad, "\n1)V.DOMINICO\n2)V.CORINA\n3)GERLI\n4)CHINGOLO\n5)V.OBRERA"
+										"\n6)SOLANO\n7)BERNAL\n8)AVELLANEDA\n9)LANUS\n10)QUILMES\n\nIndique localidad.", "ERROR\n", 1, 10, 2) == 0){
+									list[index].localidadZona = bufferLocalidad;
+									printf("Modificacion realizada.");
+								}
+								break;
+							}
+					}
+				}while(opcionMenu != 3);
+		} else {
+			printf("ERROR, no se ha encontrado zona asociado a ese ID.");
+		}
+		retorno = 0;
+	}
+	return retorno;
+}
+
+
 /// @brief Verifica si hay al menos una zona cargada
 ///
 /// @param list Puntero al array
@@ -114,7 +276,7 @@ int hayZonaCargada(Zona *list, int len) {
 	}
 	return retorno;
 }
-/// @brief
+/// @brief Asigna una zona pendiente a un censista y pone a este ultimo como "activo"
 ///
 /// @param zonas Puntero al array
 /// @param len Largo del array
@@ -127,13 +289,14 @@ int asignarZona(Zona *zonas, int len, Censista *censistas){
 	int bufferIdCensista;
 	int posicionDeZona;
 	int flagCensista = 0;
+	int flag = 0;
 
 	if(zonas != NULL && censistas != NULL && len > 0){
 		mostrarZonasPendientes(zonas, len);
 		utn_getNumero(&bufferIdZona, "\n\nIndique ID de zona a censar. \n", "ERROR\n", 400, 500, 2);
 
 		for(int i = 0; i < len; i++){
-			if(bufferIdZona == zonas[i].idZona && zonas[i].estado == PENDIENTE){
+			if(zonas[i].isEmpty == 0 && bufferIdZona == zonas[i].idZona && zonas[i].estado == PENDIENTE){
 				posicionDeZona = i;
 				for(int j = 0; j < len; j++){
 					if(censistas[j].estado == ACTIVO && censistas[j].idZona == zonas[i].idZona){
@@ -153,31 +316,20 @@ int asignarZona(Zona *zonas, int len, Censista *censistas){
 				if(bufferIdCensista == censistas[i].idCensista && censistas[i].estado == LIBERADO){
 					censistas[i].idZona = zonas[posicionDeZona].idZona;
 					censistas[i].estado = ACTIVO;
+					flag = 1;
 					printf("Censista asignado ID: %d a la zona ID: %d\n", censistas[i].idCensista, zonas[posicionDeZona].idZona);
 					retorno = 0;
 					break;
-				} else {
-					printf("ERROR, no se puede asignar ese censista.");
-					break;
 				}
 			}
+				if(flag == 0){
+					printf("ERROR, ese ID de censista no existe.\n");
+				}
 		}
 		return retorno;
 	}
 
-//if(flag == 0){
-//			for(int i = 0; i < len; i++){
-//				if(censistas[i].estado == 3){
-//					censistas[i].idZona = zonas[posicionDeZona].idZona;
-//					censistas[i].estado = 1;
-//					printf("Censista asignado.");
-//				}
-//			}
-//		}
-//		retorno = 0;
-
-
-/// @brief
+/// @brief Carga datos de una zona asignada y la finaliza
 ///
 /// @param zonas Puntero al array
 /// @param inSitu Cargados in situ
@@ -193,10 +345,11 @@ int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Cens
 	int bufferInSitu;
 	int bufferVirtual;
 	int bufferAusentes;
+	int flag = 0;
 
 	if(zonas != NULL && censistas != NULL && len > 0){
-		mostrarZonas(zonas, censistas, len);
-		if(utn_getNumero(&bufferIdZona, "\n\nIndique ID de zona a finalizar. \n", "ERROR\n", 400, 700, 2) == 0){ // arreglar: finalizar solamente zonas asignadas y que no me finalice cualquiera
+		mostrarZonasDatos(zonas, censistas, len);
+		if(utn_getNumero(&bufferIdZona, "\n\nIndique ID de zona a finalizar. \n", "ERROR\n", 400, 700, 2) == 0){
 			for(int i = 0; i < len; i++){
 				if(zonas[i].idZona == bufferIdZona && zonas[i].estado == PENDIENTE){
 					for(int j = 0; j < len; j++){
@@ -205,15 +358,16 @@ int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Cens
 								if(utn_getNumero(&bufferVirtual, "\nIndique censados de manera virtual: (0 - 400): ", "ERROR\n", 0, 400, 2) == 0){
 									if(utn_getNumero(&bufferAusentes, "\nIndique ausentes. (0 - 400): ", "ERROR\n", 0, 400, 2) == 0){
 										ausentes = bufferAusentes;
+										flag = 1;
 									}
 									virtual = bufferVirtual;
 								}
 								inSitu = bufferInSitu;
 							}
-						} else {
-							printf("ERROR, no tiene ningun censista asociado.");
-							break;
 						}
+					}
+					if(flag == 0){
+						printf("ERROR, no se puede finalizar una zona si no hay censista asignado.\n");
 					}
 				}
 			}
@@ -240,24 +394,6 @@ int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Cens
 	return retorno;
 }
 
-/// @brief Muestra la lista de zonas
-///
-/// @param list Puntero al array
-/// @param len Largo del array
-/// @return Retorna (0) si hay error - (1) si no
-//int mostrarZonas(Zona *list, int len) {
-//	int retorno;
-//	retorno = -1;
-//
-//	if(list != NULL && len > 0){
-//		for(int i = 0; i < len; i++){
-//			mostrarZona(list[i]);
-//		}
-//		retorno = 0;
-//	}
-//
-//return retorno;
-//}
 /// @brief Muestra una zona
 ///
 /// @param list Puntero al array
@@ -279,10 +415,10 @@ int cargaForzadaZona(Zona *list){
 	printf("\nINFORMAR ZONA/S\n\n");
 
 	Zona zonas[LEN_CARGA_ZONA] = {{400,{"POSADAS","PICO","CAXARAVILLE", "CAMPICHUELO"}, 2, PENDIENTE, 0, 0, 0, 0},
-								{402,{"algo","algo2","algo3", "algo4"}, 3, PENDIENTE, 0, 0, 0, 0},
-								{403,{"EEEEE","MARADONA","EL ", "DIEEEO"}, 4, PENDIENTE, 0, 0, 0, 0},
-								{404,{"MESSI","HACE","UN", "GOL"}, 5, PENDIENTE, 0, 0, 0, 0},
-								{405,{"DDDD","algAAo2","aEEEE3", "aWWWW4"}, 6, PENDIENTE, 0, 0, 0, 0}};
+								{402,{"CARRANZA","CRUZ","MANDIOCA", "ESTACA"}, 3, PENDIENTE, 0, 0, 0, 0},
+								{403,{"PENELOPE","MARADONA","RAMON ", "CABRERO"}, 4, PENDIENTE, 0, 0, 0, 0},
+								{404,{"AZUL","UCRANIA","SATURNO", "METEGOL"}, 5, PENDIENTE, 0, 0, 0, 0},
+								{405,{"CAMARA","MODERNA","CAJONEL", "AGUASUL"}, 6, PENDIENTE, 0, 0, 0, 0}};
 
 
 
@@ -329,14 +465,50 @@ int mostrarZonasPendientes(Zona *list, int len) {
 return retorno;
 }
 
-int mostrarZonas(Zona *zonas, Censista *censistas, int len){
+//// @brief Muestra zonas pendientes y finalizadas
+///
+/// @param list Puntero al array
+void mostrarZonaPendienteYFinalizada(Zona list){
+
+	if(list.isEmpty == 0) {
+		printf("\nID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: %s\n",
+				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], localidad[list.localidadZona], estado[list.estado]);
+	}
+
+}
+
+/// @brief Muestra la lista de zonas pendientes y finalizadas
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (0) si hay error - (1) si no
+int mostrarZonasPendientesYFinalizadas(Zona *list, int len) {
+	int retorno = -1;
+
+	if(list != NULL && len > 0){
+		for(int i = 0; i < len; i++){
+			mostrarZonaPendienteYFinalizada(list[i]);
+		}
+		retorno = 0;
+	}
+
+return retorno;
+}
+
+/// @brief Muestra las zonas con todos sus datos
+///
+/// @param zonas Puntero al array
+/// @param censistas Puntero al array
+/// @param len Largo del array
+/// @return Retorna (-1) si hay error - (0) si no
+int mostrarZonasDatos(Zona *zonas, Censista *censistas, int len){
 
 	int retorno = -1;
 
 	if(zonas != NULL && censistas != NULL && len){
 		for(int i = 0; i < len; i++){
 			if(zonas[i].isEmpty == 0){
-				printf("\nID: %d \nCALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s \nLOCALIDAD: %s \nESTADO: %s \nCENSADOS: IN SITU: %d - VIRTUALES: %d - AUSENTES: %d\n",
+				printf("\n\nID: %d \nCALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s \nLOCALIDAD: %s \nESTADO: %s \nCENSADOS: IN SITU: %d - VIRTUALES: %d - AUSENTES: %d\nNO HAY RESPONSABLE ASIGNADO\n",
 						zonas[i].idZona,
 						zonas[i].calles[0], zonas[i].calles[1], zonas[i].calles[2], zonas[i].calles[3],
 						localidad[zonas[i].localidadZona],
@@ -353,3 +525,4 @@ int mostrarZonas(Zona *zonas, Censista *censistas, int len){
 	}
 	return retorno;
 }
+

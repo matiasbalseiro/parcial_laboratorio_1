@@ -2,7 +2,7 @@
  * zona.h
  *
  *  Created on: 15 may. 2022
- *      Author: matia
+ *      Author: matias
  */
 #ifndef ZONA_H_
 #define ZONA_H_
@@ -19,7 +19,7 @@ struct {
 	int idZona;
 	char calles[CANT_CALLES][LEN_CALLES];
 	int localidadZona;
-	int estado; //pendiente2/finalizado1
+	int estado;
 	int inSitu;
 	int virtual;
 	int ausentes;
@@ -30,9 +30,15 @@ int initZonas(Zona *list, int len);
 
 int cargarZona(Zona *list, int len, int id, char calle[][51], int localidad);
 
+int buscarZonaPorId(Zona *list, int len, int id);
+
+int removerZona(Zona *zonas, Censista *censistas, int len);
+
+int modificarZona(Zona *list, int len, int id);
+
 int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Censista *censistas);
 
-int mostrarZonas(Zona *zonas, Censista *censistas, int len);
+int mostrarZonasDatos(Zona *zonas, Censista *censistas, int len);
 
 void mostrarZona(Zona list);
 
@@ -48,8 +54,13 @@ void mostrarZonaPendiente(Zona list);
 
 int mostrarZonasPendientes(Zona *list, int len);
 
+void mostrarZonaPendienteYFinalizada(Zona list);
+
+int mostrarZonasPendientesYFinalizadas(Zona *list, int len);
+
 
 
 
 #endif /* ZONA_H_ */
+
 
