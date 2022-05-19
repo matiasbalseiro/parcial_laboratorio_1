@@ -14,8 +14,6 @@
 #include "utn.h"
 #include "censista.h"
 #include "zona.h"
-#include "direcciones.h"
-#include "fechasDeNacimiento.h"
 
 #define CANT_CENSISTAS_ZONAS 10
 #define LEN_NOMBRE 51

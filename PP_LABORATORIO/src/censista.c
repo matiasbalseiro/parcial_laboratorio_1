@@ -9,8 +9,6 @@
 #include <string.h>
 #include "utn.h"
 #include "censista.h"
-#include "fechasDeNacimiento.h"
-#include "direcciones.h"
 #include "zona.h"
 
 static char estado[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};

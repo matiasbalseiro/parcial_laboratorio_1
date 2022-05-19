@@ -288,7 +288,7 @@ int asignarZona(Zona *zonas, int len, Censista *censistas){
 	int bufferIdZona;
 	int bufferIdCensista;
 	int posicionDeZona;
-	int flagCensista = 0;
+	int flagCensista = 1;
 	int flag = 0;
 
 	if(zonas != NULL && censistas != NULL && len > 0){
@@ -298,6 +298,7 @@ int asignarZona(Zona *zonas, int len, Censista *censistas){
 		for(int i = 0; i < len; i++){
 			if(zonas[i].isEmpty == 0 && bufferIdZona == zonas[i].idZona && zonas[i].estado == PENDIENTE){
 				posicionDeZona = i;
+				flagCensista = 0;
 				for(int j = 0; j < len; j++){
 					if(censistas[j].estado == ACTIVO && censistas[j].idZona == zonas[i].idZona){
 						printf("Este zona ya fue asignada");
