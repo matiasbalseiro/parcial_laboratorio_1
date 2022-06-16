@@ -2,16 +2,16 @@
  * censista.c
  *
  *  Created on: 15 may. 2022
- *      Author: matias
+ *      Author: matia
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "utn.h"
 #include "censista.h"
+#include "fechasDeNacimiento.h"
+#include "direcciones.h"
 #include "zona.h"
-
-static char estado[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
 
 static int incrementarId();
 
@@ -78,7 +78,7 @@ int cargarCensista(Censista *list, int len, int id, char nombre[], char apellido
 					retorno = 0;
 					mostrarCensista(list[indexLibre]);
 
-					printf("\nCARGA EXITOSA. SE DIO DE ALTA AL CENSISTA\n");
+					printf("\nCARGA EXITOSA. SE DIO DE ALTA AL PASAJERO\n");
 		}
 	}
 	return retorno;
@@ -120,8 +120,8 @@ int removerCensista(Censista *list, int len, int id) {
 
 	if (list != NULL && len > 0) {
 		mostrarCensistas(list, len);
-		if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 1000, 2000, 2) == 0){
-			id = bufferId;
+			if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 1000, 2000, 2) == 0){
+				id = bufferId;
 		}
 		index = buscarCensistaPorId(list, len, id);
 		if (index != -1){
@@ -143,7 +143,7 @@ int removerCensista(Censista *list, int len, int id) {
 	return retorno;
 }
 
-/// @brief Modifica datos del censista
+/// @brief
 ///
 /// @param list Puntero al array
 /// @param len Largo del array
@@ -285,7 +285,7 @@ int modificarCensista(Censista *list, int len, int id){
 					}
 				}while(opcionMenu != 6);
 		} else {
-			printf("ERROR, no se ha encontrado censista asociado a ese ID.");
+			printf("ERROR, no se ha encontrado pasajero asociado a ese ID.");
 		}
 	}
 	return retorno;
@@ -382,38 +382,20 @@ int mostrarCensistas(Censista *list, int len) {
 return retorno;
 }
 
-/// @brief Muestra la lista de censistas activos
-///
-/// @param list Puntero al array
-/// @param len Largo del array
-/// @return Retorna (0) si hay error - (1) si no
-int mostrarCensistasActivos(Censista *list, int len) {
-	int retorno;
-	retorno = -1;
-
-	if(list != NULL && len > 0){
-		for(int i = 0; i < len; i++){
-			if(list[i].estado == ACTIVO){
-				mostrarCensista(list[i]);
-			}
-		}
-		retorno = 0;
-	}
-
-return retorno;
-}
-
 /// @brief Muestra un censista
 ///
 /// @param list Puntero al array
 void mostrarCensista(Censista list){
+
+	char ESTADO[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
+
 
 	if(list.isEmpty == 0) {
 		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
 				list.idCensista, list.nombre, list.apellido,
 				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
 				list.fechadenacimiento.anio, list.edad,
-				list.direccion.calle, list.direccion.altura, estado[list.estado]);
+				list.direccion.calle, list.direccion.altura, ESTADO[list.estado]);
 	}
 }
 
@@ -426,11 +408,11 @@ int cargaForzadaCensista(Censista *list){
 	int i;
 	printf("\nINFORMAR CENSISTA/S\n\n");
 
-	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, LIBERADO,0, 0},
-											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, LIBERADO, 0, 0},
-											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, LIBERADO, 0, 0},
-											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, LIBERADO, 0, 0},
-											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, LIBERADO, 0, 0}};
+	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, 1,0},
+											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, 1, 0},
+											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, 1, 0},
+											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, 1, 0},
+											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, 1, 0}};
 
 	if(list != NULL){
 		for(i = 0; i < LEN_CARGA_CENSISTA; i++){
@@ -442,36 +424,4 @@ int cargaForzadaCensista(Censista *list){
 	}
 	return retorno;
 }
-
-void mostrarCensistaPendiente(Censista list){
-
-	if(list.isEmpty == 0 && list.estado == LIBERADO) {
-		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
-				list.idCensista, list.nombre, list.apellido,
-				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
-				list.fechadenacimiento.anio, list.edad,
-				list.direccion.calle, list.direccion.altura, estado[list.estado]);
-	}
-
-}
-
-/// @brief Muestra la lista de censistas con sus datos y estado "liberado"
-///
-/// @param list Puntero al array
-/// @param len Largo del array
-/// @return Retorna (0) si hay error - (1) si no
-int mostrarCensistasPendientes(Censista *list, int len) {
-	int retorno;
-	retorno = -1;
-
-	if(list != NULL && len > 0){
-		for(int i = 0; i < len; i++){
-			mostrarCensistaPendiente(list[i]);
-		}
-		retorno = 0;
-	}
-
-return retorno;
-}
-
 
