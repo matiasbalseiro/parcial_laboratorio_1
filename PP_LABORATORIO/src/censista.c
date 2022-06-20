@@ -8,10 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "utn.h"
+#include "menu.h"
 #include "censista.h"
 #include "fechasDeNacimiento.h"
 #include "direcciones.h"
 #include "zona.h"
+
+static char estado[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
 
 static int incrementarId();
 
@@ -78,7 +81,7 @@ int cargarCensista(Censista *list, int len, int id, char nombre[], char apellido
 					retorno = 0;
 					mostrarCensista(list[indexLibre]);
 
-					printf("\nCARGA EXITOSA. SE DIO DE ALTA AL PASAJERO\n");
+					printf("\nCARGA EXITOSA. SE DIO DE ALTA AL CENSISTA\n");
 		}
 	}
 	return retorno;
@@ -120,17 +123,17 @@ int removerCensista(Censista *list, int len, int id) {
 
 	if (list != NULL && len > 0) {
 		mostrarCensistas(list, len);
-			if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 1000, 2000, 2) == 0){
-				id = bufferId;
+		if(utn_getNumero(&bufferId, "\n\nIndique ID a dar de baja. \n", "ERROR\n", 1000, 2000, 2) == 0){
+			id = bufferId;
 		}
 		index = buscarCensistaPorId(list, len, id);
 		if (index != -1){
-			if(list[index].estado == 1) {
-				list[index].estado = 2;
+			if(list[index].estado == ACTIVO) {
+				list[index].estado = INACTIVO;
 				printf("CENSISTA INACTIVO. SE HAN GUARDADO LOS CAMBIOS\n");
-				flag = 1;
+				flag = 1; // pongo la flag pq si no me lo da de baja de una y yo quiero que me lo deje inactivo
 			}
-			if(list[index].estado != 1 && flag == 0){
+			if(list[index].estado != ACTIVO && flag == 0){
 				list[index].isEmpty = 1;
 				printf("BAJA EXITOSA. SE HAN GUARDADO LOS CAMBIOS\n");
 
@@ -143,7 +146,7 @@ int removerCensista(Censista *list, int len, int id) {
 	return retorno;
 }
 
-/// @brief
+/// @brief Modifica datos del censista
 ///
 /// @param list Puntero al array
 /// @param len Largo del array
@@ -153,9 +156,9 @@ int modificarCensista(Censista *list, int len, int id){
 
 	int retorno = -1;
 	int index;
-	int opcionMenu;
-	int opcionMenuFecha;
-	int opcionMenuDomicilio;
+	int opcion;
+	int opcionFecha;
+	int opcionDomicilio;
 	int bufferId;
 	char bufferNombre[LEN_NOMBRE];
 	char bufferApellido[LEN_NOMBRE];
@@ -163,7 +166,7 @@ int modificarCensista(Censista *list, int len, int id){
 	int bufferMes;
 	int bufferAnio;
 	int bufferEdad;
-	char bufferCalle[LEN_NOMBRE];
+	char bufferCalle[LEN_CALLE];
 	int bufferAltura;
 
 	if (list != NULL && len > 0) {
@@ -175,59 +178,38 @@ int modificarCensista(Censista *list, int len, int id){
 		if (index != -1){
 			mostrarCensista(list[index]);
 				do{
-					if (utn_getNumero(&opcionMenu,
-
-							"\n*****************************MENU MODIFICAR*****************************\n\n"
-									"1. NOMBRE \n"
-									"2. APELLIDO \n"
-									"3. FECHA DE NACIMIENTO\n"
-									"4. EDAD\n"
-									"5. DOMICILIO\n"
-									"6. REGRESAR AL MENU PRINCIPAL\n"
-									"\nElija una opcion: ",
-
-							"\nError opcion invalida", 1, 6, 2) == 0) {
-							switch(opcionMenu){
+					opcion = menuModificar();
+							switch(opcion){
 							case 1:
-								if(utn_getNombre(bufferNombre,LEN_NOMBRE,"\nIndique el nombre del censista: ","\nERROR, ingrese un nombre valido.\n",2) == 0){
+								if(!utn_getNombre(bufferNombre,LEN_NOMBRE,"\nIndique el nombre del censista: ","\nERROR, ingrese un nombre valido.\n",2)){
 									strncpy(list[index].nombre, bufferNombre, sizeof(list[index].nombre));
 									printf("Modificacion realizada.");
 								}
 								break;
 							case 2:
-								if(utn_getNombre(bufferApellido,LEN_NOMBRE,"\nIndique el apellido del censista: ","\nERROR, ingrese un apellido valido.\n",2) == 0){
+								if(!utn_getNombre(bufferApellido,LEN_NOMBRE,"\nIndique el apellido del censista: ","\nERROR, ingrese un apellido valido.\n",2)){
 									strncpy(list[index].apellido, bufferApellido, sizeof(list[index].apellido));
 									printf("Modificacion realizada.");
 								}
 								break;
 							case 3:
 								do{
-									if (utn_getNumero(&opcionMenuFecha,
-
-													"\n*****************************MODIFICAR FECHA DE NACIMIENTO*****************************\n\n"
-															"1. DIA: \n"
-															"2. MES: \n"
-															"3. ANIO: \n"
-															"4. VOLVER ATRAS \n"
-															"\nElija una opcion: ",
-
-															"\nError opcion invalida", 1, 4, 2) == 0) {
-											}
-									switch(opcionMenuFecha){
+									opcionFecha = menuModificarFecha();
+									switch(opcionFecha){
 									case 1:
-										if(utn_getNumero(&bufferDia, "\nIndique dia de nacimiento. (1 - 31): ", "ERROR", 1, 31, 2) == 0){
+										if(!utn_getNumero(&bufferDia, "\nIndique dia de nacimiento. (1 - 31): ", "ERROR", 1, 31, 2)){
 											list[index].fechadenacimiento.dia = bufferDia;
 											printf("Modificacion realizada.");
 										}
 										break;
 									case 2:
-										if(utn_getNumero(&bufferMes, "\nIndique mes de nacimiento. (1 - 12): ", "ERROR", 1, 12, 2) == 0){
+										if(!utn_getNumero(&bufferMes, "\nIndique mes de nacimiento. (1 - 12): ", "ERROR", 1, 12, 2)){
 											list[index].fechadenacimiento.mes = bufferMes;
 											printf("Modificacion realizada.");
 										}
 										break;
 									case 3:
-										if(utn_getNumero(&bufferAnio, "\nIndique anio de nacimiento. (1970 - 2004): ", "ERROR", 18, 52, 2) == 0){
+										if(!utn_getNumero(&bufferAnio, "\nIndique anio de nacimiento. (1970 - 2004): ", "ERROR", 18, 52, 2)){
 											list[index].fechadenacimiento.anio = bufferAnio;
 											printf("Modificacion realizada.");
 										}
@@ -236,11 +218,11 @@ int modificarCensista(Censista *list, int len, int id){
 										printf("Volver atras");
 										break;
 									}
-								}while(opcionMenuFecha != 4);
+								}while(opcionFecha != 4);
 
 								break;
 							case 4:
-								if(utn_getNumero(&bufferEdad, "\nIndique anio de nacimiento. (1970 - 2004): ", "ERROR", 18, 52, 2) == 0){
+								if(!utn_getNumero(&bufferEdad, "\nIndique anio de nacimiento. (1970 - 2004): ", "ERROR", 18, 52, 2)){
 									list[index].edad = bufferEdad;
 									printf("Modificacion realizada.");
 								}
@@ -248,25 +230,16 @@ int modificarCensista(Censista *list, int len, int id){
 							case 5:
 
 								do{
-									if (utn_getNumero(&opcionMenuDomicilio,
-
-													"\n*****************************MODIFICAR DOMICILIO*****************************\n\n"
-															"1. CALLE: \n"
-															"2. ALTURA: \n"
-															"3. VOLVER ATRAS \n"
-															"\nElija una opcion: ",
-
-															"\nError opcion invalida", 1, 3, 2) == 0) {
-											}
-									switch(opcionMenuDomicilio){
+									opcionDomicilio = menuModificarDomicilio();
+									switch(opcionDomicilio){
 									case 1:
-										if(utn_getNombre(bufferCalle, LEN_NOMBRE, "\nIndique calle: ", "\nERROR, ingrese una calle valida.\n", 2) == 0){
+										if(!utn_getNombre(bufferCalle, LEN_NOMBRE, "\nIndique calle: ", "\nERROR, ingrese una calle valida.\n", 2)){
 											strncpy(list[index].direccion.calle, bufferCalle, sizeof(list[index].direccion.calle));
 											printf("Modificacion realizada.");
 										}
 										break;
 									case 2:
-										if(utn_getNumero(&bufferAltura, "\nIndique altura del domicilio. (1 - 10000): ", "ERROR", 1, 10000, 2) == 0){
+										if(!utn_getNumero(&bufferAltura, "\nIndique altura del domicilio. (1 - 10000): ", "ERROR", 1, 10000, 2)){
 											list[index].direccion.altura = bufferAltura;
 											printf("Modificacion realizada.");
 										}
@@ -275,17 +248,16 @@ int modificarCensista(Censista *list, int len, int id){
 										printf("Volver atras");
 										break;
 									}
-								}while(opcionMenuDomicilio != 3);
+								}while(opcionDomicilio != 3);
 								break;
 							case 6:
 								printf("Regresando al menu principal...\n");
 								retorno = 0;
 								break;
 							}
-					}
-				}while(opcionMenu != 6);
+				}while(opcion != 6);
 		} else {
-			printf("ERROR, no se ha encontrado pasajero asociado a ese ID.");
+			printf("ERROR, no se ha encontrado censista asociado a ese ID.");
 		}
 	}
 	return retorno;
@@ -330,38 +302,6 @@ int hayCensistaCargado(Censista *list, int len) {
 	return retorno;
 }
 
-/// @brief
-///
-/// @param list Puntero al array
-/// @param len Largo del array
-/// @param id Id del censista
-/// @return Retorna (-1) si hay error - (0) si no
-//int existeCensistaPorId(Censista *list, int len, int id){
-//	int retorno = -1;
-//
-//		if(list != NULL && len > 0){
-//			for(int i = 0; i < len; i++){
-//				if(list[i].isEmpty == 0 && list[i].idCensista == id){
-//					retorno = 0;
-//					break;
-//				}
-//			}
-//		}
-//	return retorno;
-//}
-
-//int censistaLiberado(Censista *list, int len){
-//	int retorno = -1;
-//
-//	if(list != NULL && len > 0) {
-//		for(int i = 0; i < len; i++) {
-//			if(list[i].isEmpty == 0 && list[i].estado == 3) {
-//				retorno = i;
-//			}
-//		}
-//	}
-//	return retorno;
-//}
 
 /// @brief Muestra la lista de censistas
 ///
@@ -387,15 +327,12 @@ return retorno;
 /// @param list Puntero al array
 void mostrarCensista(Censista list){
 
-	char ESTADO[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
-
-
 	if(list.isEmpty == 0) {
 		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
 				list.idCensista, list.nombre, list.apellido,
 				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
 				list.fechadenacimiento.anio, list.edad,
-				list.direccion.calle, list.direccion.altura, ESTADO[list.estado]);
+				list.direccion.calle, list.direccion.altura, estado[list.estado]);
 	}
 }
 
@@ -408,11 +345,11 @@ int cargaForzadaCensista(Censista *list){
 	int i;
 	printf("\nINFORMAR CENSISTA/S\n\n");
 
-	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, 1,0},
-											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, 1, 0},
-											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, 1, 0},
-											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, 1, 0},
-											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, 1, 0}};
+	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, LIBERADO,0, 0},
+											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, LIBERADO, 0, 0},
+											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, ACTIVO, 0, 0},
+											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, LIBERADO, 0, 0},
+											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, ACTIVO, 0, 0}};
 
 	if(list != NULL){
 		for(i = 0; i < LEN_CARGA_CENSISTA; i++){
@@ -423,5 +360,36 @@ int cargaForzadaCensista(Censista *list){
 		}
 	}
 	return retorno;
+}
+
+void mostrarCensistaPendiente(Censista list){
+
+	if(list.isEmpty == 0 && list.estado == LIBERADO) {
+		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
+				list.idCensista, list.nombre, list.apellido,
+				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
+				list.fechadenacimiento.anio, list.edad,
+				list.direccion.calle, list.direccion.altura, estado[list.estado]);
+	}
+
+}
+
+/// @brief Muestra la lista de censistas con sus datos y estado "liberado"
+///
+/// @param list Puntero al array
+/// @param len Largo del array
+/// @return Retorna (0) si hay error - (1) si no
+int mostrarCensistasPendientes(Censista *list, int len) {
+	int retorno;
+	retorno = -1;
+
+	if(list != NULL && len > 0){
+		for(int i = 0; i < len; i++){
+			mostrarCensistaPendiente(list[i]);
+		}
+		retorno = 0;
+	}
+
+return retorno;
 }
 

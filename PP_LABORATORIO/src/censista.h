@@ -12,7 +12,11 @@
 #include "direcciones.h"
 
 #define LEN_NOMBRE 51
+#define LEN_CALLE 51
 #define LEN_CARGA_CENSISTA 5
+#define ACTIVO 1
+#define INACTIVO 2
+#define LIBERADO 3
 
 struct {
 	int idCensista;
@@ -50,5 +54,9 @@ int mostrarCensistas(Censista *list, int len);
 void mostrarCensista(Censista list);
 
 int cargaForzadaCensista(Censista *list);
+
+void mostrarCensistaPendiente(Censista list);
+
+int mostrarCensistasPendientes(Censista *list, int len);
 
 #endif /* CENSISTA_H_ */
