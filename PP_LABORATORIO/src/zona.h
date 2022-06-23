@@ -18,7 +18,7 @@
 struct {
 	int idZona;
 	char calles[CANT_CALLES][LEN_CALLES];
-	int localidadZona;
+	char localidadZona[LEN_CALLES];
 	int estado;
 	int inSitu;
 	int virtual;

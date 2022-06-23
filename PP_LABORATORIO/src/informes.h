@@ -20,5 +20,5 @@
 
 #endif /* INFORMES_H_ */
 
-int censistasActivosYZonaPendiente(Zona *zonas, Censista *censistas, int len);
-int censistasOrdenados(Censista *censistas, int len);
+int informeA(Zona *zonas, Censista *censistas, int len);
+

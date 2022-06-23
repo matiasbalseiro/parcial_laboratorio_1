@@ -416,3 +416,37 @@ int utn_getFechaDeNacimiento(char* pResultado, int longitud,char* mensaje, char*
 	}
 	return retorno;
 }
+
+int utn_getString(char* pResultado, char* mensaje, char* mensajeError) {
+
+	int retorno = -1;
+	char buffer[1024];
+
+	if (mensaje != NULL && mensajeError != NULL) {
+		printf("%s", mensaje);
+		fflush(stdin);
+		fgets(buffer, sizeof(buffer), stdin);
+		buffer[strlen(buffer) - 1] = '\0';
+		if (utn_isLetter(buffer) == 1) {
+			strcpy(pResultado, buffer);
+			retorno = 0;
+		} else {
+			printf("%s", mensajeError);
+		}
+	}
+	return retorno;
+}
+
+int utn_isLetter(char* pResultado)
+{
+	int retorno = 1;
+	int i = 0;
+
+	while(pResultado[i] != '\0'){
+		if((pResultado[i] < 'a' || pResultado[i] > 'z') && (pResultado[i] < 'A' || pResultado[i] > 'Z') && (pResultado[i] != ' ')){
+			retorno = 0;
+		}
+		i++;
+	}
+	return retorno;
+}

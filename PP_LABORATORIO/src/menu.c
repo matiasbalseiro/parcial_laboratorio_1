@@ -79,3 +79,37 @@ int menuModificarDomicilio(){
 
 	return opcion;
 }
+
+int menuModificarZonas(){
+
+	int opcion;
+
+	utn_getNumero(&opcion,
+					"\n*****************************MENU MODIFICAR*****************************\n\n"
+							"1. CALLES \n"
+							"2. LOCALIDAD \n"
+							"3. REGRESAR AL MENU PRINCIPAL\n"
+							"\nElija una opcion: ",
+
+					"\nError opcion invalida", 1, 3, 2);
+
+	return opcion;
+}
+
+int menuModificarCalles(){
+
+	int opcion;
+
+	utn_getNumero(&opcion,
+					"\n*****************************MODIFICAR CALLES*****************************\n\n"
+							"1. CALLE 1: \n"
+							"2. CALLE 2: \n"
+							"3. CALLE 3: \n"
+							"4. CALLE 4: \n"
+							"5. VOLVER ATRAS \n"
+							"\nElija una opcion: ",
+
+							"\nError opcion invalida", 1, 5, 2);
+
+	return opcion;
+}

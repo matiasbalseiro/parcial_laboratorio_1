@@ -12,6 +12,7 @@ int menuPrincipal();
 int menuModificar();
 int menuModificarFecha();
 int menuModificarDomicilio();
-
+int menuModificarZonas();
+int menuModificarCalles();
 
 #endif /* MENU_H_ */

@@ -15,8 +15,6 @@
 #include "menu.h"
 #include "censista.h"
 #include "zona.h"
-#include "direcciones.h"
-#include "fechasDeNacimiento.h"
 #include "cargaDatos.h"
 
 #define CANT_CENSISTAS 10
@@ -104,15 +102,7 @@ int main(void) {
 			break;
 		case 11:
 			printf("Adios.");
-			//modificarZona(zonas, CANT_CENSISTAS_ZONAS, bufferId);
-			//removerZona(zonas, censistas, CANT_CENSISTAS);
 			break;
-		/*case 12:
-
-			break;
-		case 13:
-			printf("Adios.");
-			break;*/
 		}
 	} while (opcion != 11);
 

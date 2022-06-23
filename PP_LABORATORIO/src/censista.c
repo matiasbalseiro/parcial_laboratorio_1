@@ -10,11 +10,7 @@
 #include "utn.h"
 #include "menu.h"
 #include "censista.h"
-#include "fechasDeNacimiento.h"
-#include "direcciones.h"
 #include "zona.h"
-
-static char estado[4][51] = {" ", "ACTIVO", "INACTIVO", "LIBERADO"};
 
 static int incrementarId();
 
@@ -119,7 +115,6 @@ int removerCensista(Censista *list, int len, int id) {
 	retorno = -1;
 	int index;
 	int bufferId;
-	int flag = 0;
 
 	if (list != NULL && len > 0) {
 		mostrarCensistas(list, len);
@@ -131,9 +126,8 @@ int removerCensista(Censista *list, int len, int id) {
 			if(list[index].estado == ACTIVO) {
 				list[index].estado = INACTIVO;
 				printf("CENSISTA INACTIVO. SE HAN GUARDADO LOS CAMBIOS\n");
-				flag = 1; // pongo la flag pq si no me lo da de baja de una y yo quiero que me lo deje inactivo
 			}
-			if(list[index].estado != ACTIVO && flag == 0){
+			else if(list[index].estado != ACTIVO){
 				list[index].isEmpty = 1;
 				printf("BAJA EXITOSA. SE HAN GUARDADO LOS CAMBIOS\n");
 
@@ -328,11 +322,22 @@ return retorno;
 void mostrarCensista(Censista list){
 
 	if(list.isEmpty == 0) {
-		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
+		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: ",
 				list.idCensista, list.nombre, list.apellido,
 				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
 				list.fechadenacimiento.anio, list.edad,
-				list.direccion.calle, list.direccion.altura, estado[list.estado]);
+				list.direccion.calle, list.direccion.altura);
+		switch(list.estado){
+		case 1:
+			printf("ACTIVO\n");
+			break;
+		case 2:
+			printf("INACTIVO\n");
+			break;
+		case 3:
+			printf("LIBERADO\n");
+			break;
+		}
 	}
 }
 
@@ -347,9 +352,9 @@ int cargaForzadaCensista(Censista *list){
 
 	Censista censistas[LEN_CARGA_CENSISTA] = {{1001, "BART", "SIMPSON",{12, 3, 1992}, 19,{"CALLE FALSA", 123}, LIBERADO,0, 0},
 											{1002, "MARGE", "BOUVIE",{1, 4, 1980}, 42,{"AV SIEMPRE VIVA", 752}, LIBERADO, 0, 0},
-											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, ACTIVO, 0, 0},
+											{1003, "NELSON", "MUNTZ",{12, 5, 2000}, 22,{"SPRINGFIELD", 1888}, LIBERADO, 0, 0},
 											{1004, "PATTY", "SELMA",{6, 2, 1972}, 50,{"JEREMIAS", 1552}, LIBERADO, 0, 0},
-											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, ACTIVO, 0, 0}};
+											{1005, "NED", "FLANDERS",{15, 1, 1977}, 45,{"MR BURNS", 666}, LIBERADO, 0, 0}};
 
 	if(list != NULL){
 		for(i = 0; i < LEN_CARGA_CENSISTA; i++){
@@ -362,16 +367,28 @@ int cargaForzadaCensista(Censista *list){
 	return retorno;
 }
 
-void mostrarCensistaPendiente(Censista list){
+int mostrarCensistaPendiente(Censista list){
+	int retorno = -1;
 
 	if(list.isEmpty == 0 && list.estado == LIBERADO) {
-		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado: %s\n",
+		printf("ID: %d - Nombre: %s - Apellido: %s - Fecha de nacimiento: %d/%d/%d - Edad: %d - Domicilio: %s %d - Estado:",
 				list.idCensista, list.nombre, list.apellido,
 				list.fechadenacimiento.dia, list.fechadenacimiento.mes,
 				list.fechadenacimiento.anio, list.edad,
-				list.direccion.calle, list.direccion.altura, estado[list.estado]);
+				list.direccion.calle, list.direccion.altura);
+		switch(list.estado){
+		case 1:
+			printf("ACTIVO\n");
+			break;
+		case 2:
+			printf("INACTIVO\n");
+			break;
+		case 3:
+			printf("LIBERADO\n");
+			break;
+		}
 	}
-
+	return retorno = 0;
 }
 
 /// @brief Muestra la lista de censistas con sus datos y estado "liberado"
@@ -392,4 +409,5 @@ int mostrarCensistasPendientes(Censista *list, int len) {
 
 return retorno;
 }
+
 

@@ -10,9 +10,7 @@
 #include "utn.h"
 #include "zona.h"
 #include "censista.h"
-
-static char estado[3][51] = {" ", "PENDIENTE", "FINALIZADO"};
-static char localidad[11][51] = {" ", "V.DOMINICO", "V.CORINA", "GERLI", "CHINGOLO", "V.OBRERA", "SOLANO", "BERNAL", "AVELLANEDA", "LANUS", "QUILMES"};
+#include "menu.h"
 
 static int incrementarId();
 
@@ -64,7 +62,39 @@ int cargarZona(Zona *list, int len, int id, char calle[][51], int localidad){
 					strncpy(list[indexLibre].calles[1], calle[1], sizeof(list[indexLibre].calles[1]));
 					strncpy(list[indexLibre].calles[2], calle[2], sizeof(list[indexLibre].calles[2]));
 					strncpy(list[indexLibre].calles[3], calle[3], sizeof(list[indexLibre].calles[3]));
-					list[indexLibre].localidadZona = localidad;
+					switch (localidad) {
+						case 1:
+							strncpy(list[indexLibre].localidadZona, "V.DOMINICO", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 2:
+							strncpy(list[indexLibre].localidadZona, "V.CORINA", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 3:
+							strncpy(list[indexLibre].localidadZona, "GERLI", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 4:
+							strncpy(list[indexLibre].localidadZona, "CHINGOLO", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 5:
+							strncpy(list[indexLibre].localidadZona, "V.OBRERA", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 6:
+							strncpy(list[indexLibre].localidadZona, "SOLANO", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 7:
+							strncpy(list[indexLibre].localidadZona, "BERNAL", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 8:
+							strncpy(list[indexLibre].localidadZona, "AVELLANEDA", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 9:
+							strncpy(list[indexLibre].localidadZona, "LANUS", sizeof(list[indexLibre].localidadZona));
+							break;
+						case 10:
+							strncpy(list[indexLibre].localidadZona, "QUILMES", sizeof(list[indexLibre].localidadZona));
+							break;
+					}
+					//list[indexLibre].localidadZona = localidad;
 					list[indexLibre].estado = PENDIENTE;
 					list[indexLibre].idZona = incrementarId();
 					list[indexLibre].isEmpty = 0;
@@ -166,90 +196,101 @@ int modificarZona(Zona *list, int len, int id){
 
 	int retorno = -1;
 	int index;
-	int opcionMenu;
-	int opcionMenuCalles;
 	int bufferId;
 	int bufferLocalidad;
 	char bufferCalleUno[51];
 	char bufferCalleDos[51];
 	char bufferCalleTres[51];
 	char bufferCalleCuatro[51];
+	int opcion;
+	int opcionCalles;
 
 	if (list != NULL && len > 0) {
 		mostrarZonasPendientes(list, len);
-		if (utn_getNumero(&bufferId, "\nIndique ID a modificar. \n", "ERROR\n", 400, 500, 2) == 0) {
+		if (!utn_getNumero(&bufferId, "\nIndique ID a modificar. \n", "ERROR\n", 400, 500, 2)) {
 			id = bufferId;
 		}
 		index = buscarZonaPorId(list, len, id);
 		if (index != -1){
 			mostrarZona(list[index]);
 				do{
-					if (utn_getNumero(&opcionMenu,
-
-							"\n*****************************MENU MODIFICAR*****************************\n\n"
-									"1. CALLES \n"
-									"2. LOCALIDAD \n"
-									"3. REGRESAR AL MENU PRINCIPAL\n"
-									"\nElija una opcion: ",
-
-							"\nError opcion invalida", 1, 63, 2) == 0) {
-							switch(opcionMenu){
+					opcion = menuModificarZonas();
+					switch(opcion){
+					case 1:
+						do{
+							opcionCalles = menuModificarCalles();
+							switch(opcionCalles){
 							case 1:
-								do{
-									if (utn_getNumero(&opcionMenuCalles,
-
-													"\n*****************************MODIFICAR FECHA DE NACIMIENTO*****************************\n\n"
-															"1. CALLE 1: \n"
-															"2. CALLE 2: \n"
-															"3. CALLE 3: \n"
-															"4. CALLE 4: \n"
-															"5. VOLVER ATRAS \n"
-															"\nElija una opcion: ",
-
-															"\nError opcion invalida", 1, 5, 2) == 0) {
-											}
-									switch(opcionMenuCalles){
-									case 1:
-										if(utn_getNombre(bufferCalleUno, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
-											strncpy(list[index].calles[0], bufferCalleUno, sizeof(list[index].calles[0]));
-											printf("Modificacion realizada.");
-										}
-										break;
-									case 2:
-										if(utn_getNombre(bufferCalleDos, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
-											strncpy(list[index].calles[1], bufferCalleDos, sizeof(list[index].calles[1]));
-											printf("Modificacion realizada.");
-										}
-										break;
-									case 3:
-										if(utn_getNombre(bufferCalleTres, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
-											strncpy(list[index].calles[2], bufferCalleTres, sizeof(list[index].calles[2]));
-											printf("Modificacion realizada.");
-										}
-										break;
-									case 4:
-										if(utn_getNombre(bufferCalleCuatro, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
-											strncpy(list[index].calles[3], bufferCalleCuatro, sizeof(list[index].calles[3]));
-											printf("Modificacion realizada.");
-										}
-										break;
-									case 5:
-										printf("Volver atras");
-										break;
-									}
-								}while(opcionMenuCalles != 5);
-
-								break;
-							case 2:
-								if(utn_getNumero(&bufferLocalidad, "\n1)V.DOMINICO\n2)V.CORINA\n3)GERLI\n4)CHINGOLO\n5)V.OBRERA"
-										"\n6)SOLANO\n7)BERNAL\n8)AVELLANEDA\n9)LANUS\n10)QUILMES\n\nIndique localidad.", "ERROR\n", 1, 10, 2) == 0){
-									list[index].localidadZona = bufferLocalidad;
+								if(utn_getNombre(bufferCalleUno, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+									strncpy(list[index].calles[0], bufferCalleUno, sizeof(list[index].calles[0]));
 									printf("Modificacion realizada.");
 								}
 								break;
+							case 2:
+								if(utn_getNombre(bufferCalleDos, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+									strncpy(list[index].calles[1], bufferCalleDos, sizeof(list[index].calles[1]));
+									printf("Modificacion realizada.");
+								}
+								break;
+							case 3:
+								if(utn_getNombre(bufferCalleTres, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+									strncpy(list[index].calles[2], bufferCalleTres, sizeof(list[index].calles[2]));
+									printf("Modificacion realizada.");
+								}
+								break;
+							case 4:
+								if(utn_getNombre(bufferCalleCuatro, LEN_CALLES, "\nIndique calle: ", "\nERROR\n", 2) == 0){
+									strncpy(list[index].calles[3], bufferCalleCuatro, sizeof(list[index].calles[3]));
+									printf("Modificacion realizada.");
+								}
+								break;
+							case 5:
+								printf("Volver atras");
+								break;
 							}
+						}while(opcionCalles != 5);
+
+						break;
+					case 2:
+						if(utn_getNumero(&bufferLocalidad, "\n1)V.DOMINICO\n2)V.CORINA\n3)GERLI\n4)CHINGOLO\n5)V.OBRERA"
+								"\n6)SOLANO\n7)BERNAL\n8)AVELLANEDA\n9)LANUS\n10)QUILMES\n\nIndique localidad.", "ERROR\n", 1, 10, 2) == 0){
+							switch (bufferLocalidad) {
+								case 1:
+									strncpy(list[index].localidadZona, "V.DOMINICO", sizeof(list[index].localidadZona));
+									break;
+								case 2:
+									strncpy(list[index].localidadZona, "V.CORINA", sizeof(list[index].localidadZona));
+									break;
+								case 3:
+									strncpy(list[index].localidadZona, "GERLI", sizeof(list[index].localidadZona));
+									break;
+								case 4:
+									strncpy(list[index].localidadZona, "CHINGOLO", sizeof(list[index].localidadZona));
+									break;
+								case 5:
+									strncpy(list[index].localidadZona, "V.OBRERA", sizeof(list[index].localidadZona));
+									break;
+								case 6:
+									strncpy(list[index].localidadZona, "SOLANO", sizeof(list[index].localidadZona));
+									break;
+								case 7:
+									strncpy(list[index].localidadZona, "BERNAL", sizeof(list[index].localidadZona));
+									break;
+								case 8:
+									strncpy(list[index].localidadZona, "AVELLANEDA", sizeof(list[index].localidadZona));
+									break;
+								case 9:
+									strncpy(list[index].localidadZona, "LANUS", sizeof(list[index].localidadZona));
+									break;
+								case 10:
+									strncpy(list[index].localidadZona, "QUILMES", sizeof(list[index].localidadZona));
+									break;
+							}
+							printf("Modificacion realizada.");
+						}
+						break;
 					}
-				}while(opcionMenu != 3);
+				}while(opcion != 3);
 		} else {
 			printf("ERROR, no se ha encontrado zona asociado a ese ID.");
 		}
@@ -309,25 +350,25 @@ int asignarZona(Zona *zonas, int len, Censista *censistas){
 			}
 		}
 	}
-		if(flagCensista == 0){
-				mostrarCensistasPendientes(censistas, len);
-				utn_getNumero(&bufferIdCensista, "\n\nIndique ID del censista para la zona. \n", "ERROR\n", 1000, 1300, 2);
-				for(int i = 0; i < len; i++){
-				if(bufferIdCensista == censistas[i].idCensista && censistas[i].estado == LIBERADO){
-					censistas[i].idZona = zonas[posicionDeZona].idZona;
-					censistas[i].estado = ACTIVO;
-					flag = 1;
-					printf("Censista asignado ID: %d a la zona ID: %d\n", censistas[i].idCensista, zonas[posicionDeZona].idZona);
-					retorno = 0;
-					break;
-				}
+	if (flagCensista == 0) {
+		mostrarCensistasPendientes(censistas, len);
+		utn_getNumero(&bufferIdCensista, "\n\nIndique ID del censista para la zona. \n", "ERROR\n", 1000, 1300, 2);
+		for (int i = 0; i < len; i++) {
+			if (bufferIdCensista == censistas[i].idCensista && censistas[i].estado == LIBERADO) {
+				censistas[i].idZona = zonas[posicionDeZona].idZona;
+				censistas[i].estado = ACTIVO;
+				flag = 1;
+				printf("Censista asignado ID: %d a la zona ID: %d\n", censistas[i].idCensista, zonas[posicionDeZona].idZona);
+				retorno = 0;
+				break;
 			}
-				if(flag == 0){
-					printf("ERROR, ese ID de censista no existe.\n");
-				}
 		}
-		return retorno;
+		if (flag == 0) {
+			printf("ERROR, ese ID de censista no existe.\n");
+		}
 	}
+	return retorno;
+}
 
 /// @brief Carga datos de una zona asignada y la finaliza
 ///
@@ -342,9 +383,9 @@ int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Cens
 
 	int retorno = -1;
 	int bufferIdZona;
-	int bufferInSitu ;
-	int bufferVirtual;
-	int bufferAusentes;
+	int bufferInSitu = 0;
+	int bufferVirtual = 0;
+	int bufferAusentes = 0;
 	int flag = 0;
 
 	if(zonas != NULL && censistas != NULL && len > 0){
@@ -354,9 +395,9 @@ int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Cens
 				if(zonas[i].idZona == bufferIdZona && zonas[i].estado == PENDIENTE){
 					for(int j = 0; j < len; j++){
 						if(censistas[j].idZona == zonas[i].idZona){
-							if(utn_getNumero(&bufferInSitu, "\nIndique censados in situ: (0-400): ", "ERROR\n", 0, 400, 2) == 0){
-								if(utn_getNumero(&bufferVirtual, "\nIndique censados de manera virtual: (0 - 400): ", "ERROR\n", 0, 400, 2) == 0){
-									if(utn_getNumero(&bufferAusentes, "\nIndique ausentes. (0 - 400): ", "ERROR\n", 0, 400, 2) == 0){
+							if(!utn_getNumero(&bufferInSitu, "\nIndique censados in situ: (0-400): ", "ERROR\n", 0, 400, 2)){
+								if(!utn_getNumero(&bufferVirtual, "\nIndique censados de manera virtual: (0 - 400): ", "ERROR\n", 0, 400, 2)){
+									if(!utn_getNumero(&bufferAusentes, "\nIndique ausentes. (0 - 400): ", "ERROR\n", 0, 400, 2)){
 										ausentes = bufferAusentes;
 										flag = 1;
 									}
@@ -400,8 +441,16 @@ int cargarDatos(Zona *zonas,int inSitu, int virtual, int ausentes, int len, Cens
 void mostrarZona(Zona list){
 
 	if(list.isEmpty == 0) {
-		printf("ID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: %s\n",
-				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], localidad[list.localidadZona], estado[list.estado]);
+		printf("ID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: ",
+				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], list.localidadZona);
+		switch(list.estado){
+		case 1:
+			printf("PENDIENTE\n");
+			break;
+		case 2:
+			printf("FINALIZADO\n");
+			break;
+		}
 	}
 }
 
@@ -414,11 +463,11 @@ int cargaForzadaZona(Zona *list){
 	int i;
 	printf("\nINFORMAR ZONA/S\n\n");
 
-	Zona zonas[LEN_CARGA_ZONA] = {{400,{"POSADAS","PICO","CAXARAVILLE", "CAMPICHUELO"}, 2, PENDIENTE, 0, 0, 0, 0},
-								{402,{"algo","algo2","algo3", "algo4"}, 3, PENDIENTE, 0, 0, 0, 0},
-								{403,{"EEEEE","MARADONA","EL ", "DIEEEO"}, 4, PENDIENTE, 0, 0, 0, 0},
-								{404,{"MESSI","HACE","UN", "GOL"}, 5, PENDIENTE, 0, 0, 0, 0},
-								{405,{"DDDD","algAAo2","aEEEE3", "aWWWW4"}, 6, PENDIENTE, 0, 0, 0, 0}};
+	Zona zonas[LEN_CARGA_ZONA] = {{400,{"POSADAS","PICO","CAXARAVILLE", "CAMPICHUELO"}, "V.DOMINICO", PENDIENTE, 0, 0, 0, 0},
+								{402,{"algo","algo2","algo3", "algo4"}, "V.OBRERA", PENDIENTE, 0, 0, 0, 0},
+								{403,{"EEEEE","MARADONA","EL ", "DIEEEO"}, "BERNAL", PENDIENTE, 0, 0, 0, 0},
+								{404,{"MESSI","HACE","UN", "GOL"}, "SOLANO", PENDIENTE, 0, 0, 0, 0},
+								{405,{"DDDD","algAAo2","aEEEE3", "aWWWW4"}, "GERLI", PENDIENTE, 0, 0, 0, 0}};
 
 
 
@@ -440,8 +489,16 @@ int cargaForzadaZona(Zona *list){
 void mostrarZonaPendiente(Zona list){
 
 	if(list.isEmpty == 0 && list.estado == PENDIENTE) {
-		printf("ID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: %s\n",
-				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], localidad[list.localidadZona], estado[list.estado]);
+		printf("ID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: ",
+				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], list.localidadZona);
+		switch(list.estado){
+		case 1:
+			printf("PENDIENTE\n");
+			break;
+		case 2:
+			printf("FINALIZADO\n");
+			break;
+		}
 	}
 
 }
@@ -471,8 +528,16 @@ return retorno;
 void mostrarZonaPendienteYFinalizada(Zona list){
 
 	if(list.isEmpty == 0) {
-		printf("ID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: %s\n",
-				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], localidad[list.localidadZona], estado[list.estado]);
+		printf("ID: %d - CALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s - LOCALIDAD: %s - ESTADO: ",
+				list.idZona, list.calles[0], list.calles[1], list.calles[2], list.calles[3], list.localidadZona);
+		switch(list.estado){
+		case 1:
+			printf("PENDIENTE\n");
+			break;
+		case 2:
+			printf("FINALIZADO\n");
+			break;
+		}
 	}
 
 }
@@ -505,21 +570,33 @@ return retorno;
 int mostrarZonasDatos(Zona *zonas, Censista *censistas, int len){
 
 	int retorno = -1;
+	int flag = 0;
 
 	if(zonas != NULL && censistas != NULL && len){
 		for(int i = 0; i < len; i++){
 			if(zonas[i].isEmpty == 0){
-				printf("\nID: %d \nCALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s \nLOCALIDAD: %s \nESTADO: %s \nCENSADOS: IN SITU: %d - VIRTUALES: %d - AUSENTES: %d\nNO HAY RESPONSABLE ASIGNADO\n",
+				printf("\nID: %d \nCALLE 1: %s - CALLE 2: %s - CALLE 3: %s - CALLE 4: %s \nLOCALIDAD: %s \nCENSADOS: IN SITU: %d - VIRTUALES: %d - AUSENTES: %d\nESTADO: ",
 						zonas[i].idZona,
 						zonas[i].calles[0], zonas[i].calles[1], zonas[i].calles[2], zonas[i].calles[3],
-						localidad[zonas[i].localidadZona],
-						estado[zonas[i].estado],
+						zonas[i].localidadZona,
 						zonas[i].inSitu, zonas[i].virtual, zonas[i].ausentes);
+				switch(zonas[i].estado){
+				case 1:
+					printf("PENDIENTE\n");
+					break;
+				case 2:
+					printf("FINALIZADO\n");
+					break;
+				}
 				retorno = 0;
 				for(int j = 0; j < len; j++){
 					if(censistas[j].idZona == zonas[i].idZona && censistas[j].estado == ACTIVO){
 						printf("RESPONSABLE: NOMBRE: %s - APELLIDO: %s\n\n", censistas[j].nombre, censistas[j].apellido);
+						flag = 1;
 					}
+				}
+				if(flag == 0){
+					printf("NO HAY RESPONSABLE ASIGNADO\n");
 				}
 			}
 		}
